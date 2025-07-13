@@ -260,7 +260,7 @@ class SpotifyOverlayComponent(
                 val sec = SpotifyOverlay.currentMedia?.position
                 val totalTime = SpotifyOverlay.currentMedia?.duration
                 if (sec != null && totalTime != null) {
-                    (sec / (totalTime / 1000).toDouble())
+                    (sec / totalTime.toDouble())
                 } else {
                     0.0
                 }
@@ -289,7 +289,7 @@ class SpotifyOverlayComponent(
             val totalTime = SpotifyOverlay.currentMedia?.duration ?: 0
             val position = SpotifyOverlay.currentMedia?.position?.toInt() ?: 0
             val totalTimeText = if (totalTime > 0) {
-                String.format("%02d:%02d", totalTime / 1000 / 60, (totalTime / 1000) % 60)
+                String.format("%02d:%02d", totalTime / 60, totalTime % 60)
             } else {
                 "00:00"
             }
