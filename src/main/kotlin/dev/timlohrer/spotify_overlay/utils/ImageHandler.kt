@@ -90,40 +90,66 @@ internal object ImageHandler {
 
     fun downloadImage(url: String, cornerRadius: Int, topLeft: Boolean = true, topRight: Boolean = true, bottomLeft: Boolean = true, bottomRight: Boolean = true): Identifier {
         try {
-            println("Downloading $url")
-
-            CACHE[url]?.let {
-                println("Found cached image for $url: $it")
-                return it
-            }
-
-            val fileName = getFileNameFromUrl(url)
-            val cachedFile = File(CACHE_DIR, fileName)
-
-            if (cachedFile.exists()) {
-                println("Image found in cache: ${cachedFile.absolutePath}")
+            if (url.startsWith("http")) {
                 
+                println("Downloading $url")
+    
+                CACHE[url]?.let {
+                    println("Found cached image for $url: $it")
+                    return it
+                }
+    
+                val fileName = getFileNameFromUrl(url)
+                val cachedFile = File(CACHE_DIR, fileName)
+    
+                if (cachedFile.exists()) {
+                    println("Image found in cache: ${cachedFile.absolutePath}")
+                    
+                    return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                }
+    
+                val imageUrl = URI(url).toURL()
+                imageUrl.openStream().use { input ->
+                    Files.copy(input, cachedFile.toPath())
+                }
+                
+                if (CACHE_DIR.listFiles().size > 10) {
+                    deleteOldestCachedFile()
+                }
+    
+                println("Downloaded image to $url")
+    
+                if (isWebP(cachedFile)) {
+                    println("Converting to PNG...")
+                    val pngFile = convertWebPToPng(cachedFile)
+                    return loadFromDisk(pngFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                }
+    
                 return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
-            }
+            } else if (url.startsWith("data:image/png;base64,")) {
+                // Handle base64 encoded images
+                val base64Data = url.removePrefix("data:image/png;base64,")
+                val imageBytes = java.util.Base64.getDecoder().decode(base64Data)
+                val bufferedImage = ImageIO.read(imageBytes.inputStream()) ?: return EMPTY
+                val nativeImage = convertToNativeImage(bufferedImage)
 
-            val imageUrl = URI(url).toURL()
-            imageUrl.openStream().use { input ->
-                Files.copy(input, cachedFile.toPath())
-            }
-            
-            if (CACHE_DIR.listFiles().size > 10) {
-                deleteOldestCachedFile()
-            }
+                if (cornerRadius > 0) {
+                    applyRoundedCorners(nativeImage, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                }
 
-            println("Downloaded image to $url")
+                val id = "spotify_cover_${UUID.randomUUID()}"
+                val dynamicTexture = NativeImageBackedTexture({ id }, nativeImage)
+                val textureLocation = id.toId()
 
-            if (isWebP(cachedFile)) {
-                println("Converting to PNG...")
-                val pngFile = convertWebPToPng(cachedFile)
-                return loadFromDisk(pngFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                println("Registering texture: $textureLocation for URL: $url")
+
+                MC.textureManager.registerTexture(textureLocation, dynamicTexture)
+                CACHE[url] = textureLocation
+                return textureLocation
+            } else {
+                println("Unsupported URL format: $url")
+                return EMPTY
             }
-
-            return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
         } catch (e: Exception) {
             println("Failed to load image from $url: ${e.message}")
             return EMPTY
