@@ -27,7 +27,7 @@ internal object ImageHandler {
     private val MC = MinecraftClient.getInstance()
     private val CACHE = HashMap<String, Identifier>()
     private val CACHE_DIR = File(MC.runDirectory, "spotify-overlay/cache")
-    val EMPTY = "textures/spotify/empty.png".toId()
+    val EMPTY = "textures/spotify/empty.png".toId() // this doesnt even exist, but it is used as a placeholder
 
     init {
         if (!CACHE_DIR.exists()) {
@@ -127,31 +127,38 @@ internal object ImageHandler {
     
                 return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
             } else if (url.startsWith("data:image/png;base64,")) {
+                CACHE[url]?.let {
+                    println("Found cached image for BASE64 URL: $it")
+                    return it
+                }
+
+                val fileName = getFileNameFromUrl(url)
+                val cachedFile = File(CACHE_DIR, fileName)
+
+                if (cachedFile.exists()) {
+                    println("Image found in cache: ${cachedFile.absolutePath}")
+                    return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                }
+
                 // Handle base64 encoded images
                 val base64Data = url.removePrefix("data:image/png;base64,")
                 val imageBytes = java.util.Base64.getDecoder().decode(base64Data)
                 val bufferedImage = ImageIO.read(imageBytes.inputStream()) ?: return EMPTY
-                val nativeImage = convertToNativeImage(bufferedImage)
+                ImageIO.write(bufferedImage, "png", cachedFile)
 
-                if (cornerRadius > 0) {
-                    applyRoundedCorners(nativeImage, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
+                if (CACHE_DIR.listFiles().size > 10) {
+                    deleteOldestCachedFile()
                 }
 
-                val id = "spotify_cover_${UUID.randomUUID()}"
-                val dynamicTexture = NativeImageBackedTexture({ id }, nativeImage)
-                val textureLocation = id.toId()
-
-                println("Registering texture: $textureLocation for URL: $url")
-
-                MC.textureManager.registerTexture(textureLocation, dynamicTexture)
-                CACHE[url] = textureLocation
-                return textureLocation
+                return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
             } else {
                 println("Unsupported URL format: $url")
+                CACHE[url] = EMPTY
                 return EMPTY
             }
         } catch (e: Exception) {
             println("Failed to load image from $url: ${e.message}")
+            CACHE[url] = EMPTY
             return EMPTY
         }
     }
