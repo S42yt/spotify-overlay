@@ -4,9 +4,7 @@ import dev.timlohrer.spotify_overlay.SpotifyOverlay
 import dev.timlohrer.spotify_overlay.config.HUD_TYPE
 import dev.timlohrer.spotify_overlay.utils.ImageHandler
 import dev.timlohrer.spotify_overlay.utils.fillDouble
-import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.OwoUIDrawContext
 import io.wispforest.owo.ui.core.Sizing
 import me.x150.renderer.render.ExtendedDrawContext
