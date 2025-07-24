@@ -13,6 +13,7 @@ class SpotifyOverlayConfig : ConfigData {
     @ConfigEntry.Gui.NoTooltip
     var scale: Float = 1f
     @ConfigEntry.Gui.EnumHandler
+    @ConfigEntry.Gui.Tooltip
     var hudType: HUD_TYPE = HUD_TYPE.DEFAULT
     @ConfigEntry.Gui.NoTooltip
     var cornerRadius: Float = 4.5f
@@ -20,6 +21,6 @@ class SpotifyOverlayConfig : ConfigData {
     var showBackground: Boolean = true
     @ConfigEntry.ColorPicker(allowAlpha = false)
     var color = 0x00BB00
-    @ConfigEntry.Gui.NoTooltip
+    @ConfigEntry.Gui.Tooltip
     var sourceFilter: String = "Spotify"
 }
