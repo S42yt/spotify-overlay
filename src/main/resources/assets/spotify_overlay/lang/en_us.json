@@ -1,0 +1,18 @@
+{
+  "text.autoconfig.spotify_overlay.title": "Spotify Overlay Settings",
+  "text.autoconfig.spotify_overlay.option.renderOverlay": "Render Overlay",
+  "text.autoconfig.spotify_overlay.option.scale": "HUD Scale",
+  "text.autoconfig.spotify_overlay.option.hudType": "HUD Type",
+  "text.autoconfig.spotify_overlay.option.cornerRadius": "Corner Radius",
+  "text.autoconfig.spotify_overlay.option.showBackground": "Show Background",
+  "text.autoconfig.spotify_overlay.option.color": "Overlay Color",
+  "text.autoconfig.spotify_overlay.option.sourceFilter": "Source Filter",
+
+  "text.autoconfig.spotify_overlay.option.renderOverlay.@Tooltip": "Toggle the overlay rendering on/off.",
+  "text.autoconfig.spotify_overlay.option.scale.@Tooltip": "Adjust the scale of the overlay.",
+  "text.autoconfig.spotify_overlay.option.hudType.@Tooltip": "Choose a layout type for the overlay. (Default, Medium Cover, Big Cover)",
+  "text.autoconfig.spotify_overlay.option.cornerRadius.@Tooltip": "Rounded corner radius for the overlay.",
+  "text.autoconfig.spotify_overlay.option.showBackground.@Tooltip": "Enable or disable the overlay background.",
+  "text.autoconfig.spotify_overlay.option.color.@Tooltip": "Main accent color of the overlay.",
+  "text.autoconfig.spotify_overlay.option.sourceFilter.@Tooltip": "Allowed sources (e.g. Spotify, Apple Music)."
+}
