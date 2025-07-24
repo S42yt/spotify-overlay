@@ -24,12 +24,9 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.silkmc.silk.core.annotations.ExperimentalSilkApi
-import net.silkmc.silk.core.event.Event
+import net.silkmc.silk.core.text.literal
 import org.lwjgl.glfw.GLFW
 import org.slf4j.LoggerFactory
-import java.awt.event.KeyEvent
-import java.security.Key
 
 object SpotifyOverlay : ModInitializer {
 	private val logger = LoggerFactory.getLogger("spotify_overlay")
@@ -44,7 +41,7 @@ object SpotifyOverlay : ModInitializer {
 	var currentMedia: MediaInfo? = null
 	var lastDownloadedImageUrl: String? = null
 	var lastDownloadedImage: Identifier? = null
-	var knownSources = mutableSetOf<String>()
+	var knownSources = mutableListOf<String>()
 	
 	// this is really hacky LOL
 	internal var _shouldRender: Boolean? = null
@@ -145,6 +142,7 @@ object SpotifyOverlay : ModInitializer {
 				if (currentMedia == null || mediaInfo.isPlaying) {
 					if (!knownSources.contains(mediaInfo.source)) {
 						knownSources.add(mediaInfo.source.trim())
+						MinecraftClient.getInstance().player?.sendMessage("§a§lSpotify§fOverlay §r§b» §rNew media source detected: ${if (mediaInfo.source.contains("Spotify")) "Spotify" else mediaInfo.source}.".literal, false)
 						println("New media source detected: ${mediaInfo.source}")
 					}
 
