@@ -150,6 +150,15 @@ internal object ImageHandler {
                     deleteOldestCachedFile()
                 }
 
+                if (bufferedImage.width != bufferedImage.height) {
+                    val size = minOf(bufferedImage.width, bufferedImage.height)
+                    val resizedImage = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)
+                    val graphics = resizedImage.createGraphics()
+                    graphics.drawImage(bufferedImage, 0, 0, size, size, null)
+                    graphics.dispose()
+                    ImageIO.write(resizedImage, "png", cachedFile)
+                }
+
                 return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
             } else {
                 println("Unsupported URL format: $url")
@@ -176,7 +185,7 @@ internal object ImageHandler {
         val dynamicTexture = NativeImageBackedTexture({ id }, nativeImage)
         val textureLocation = id.toId()
         
-        println("Registering texture: $textureLocation for URL: $url")
+        println("Registering texture: $textureLocation for URL: ${url.split("base64,").first()}")
 
         MC.textureManager.registerTexture(textureLocation, dynamicTexture)
         CACHE[url] = textureLocation
@@ -243,7 +252,11 @@ internal object ImageHandler {
         val height = image.height
 
         // Ensure radius does not exceed half of the smallest dimension
-        val effectiveRadius = minOf(radius, width / 2, height / 2)
+        var effectiveRadius = minOf(radius, width / 2, height / 2)
+
+        if (image.width < 250) {
+            effectiveRadius /= 3
+        }
 
         for (x in 0 until width) {
             for (y in 0 until height) {
