@@ -14,7 +14,7 @@
 	},
 	"license": "ARR",
 	"icon": "assets/spotify_overlay/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			{
