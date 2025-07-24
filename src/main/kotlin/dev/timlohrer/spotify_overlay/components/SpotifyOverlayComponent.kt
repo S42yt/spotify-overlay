@@ -107,7 +107,7 @@ class SpotifyOverlayComponent(
                 HUD_TYPE.DEFAULT -> 18
                 HUD_TYPE.MEDIUM_COVER -> 20
                 HUD_TYPE.BIG_COVER -> 16
-            } * (scale - 1.0f) // holy fuck this is so cursed LOOOL
+            }
             
             val artistX = when (hudType) {
                 HUD_TYPE.DEFAULT -> titleX
@@ -128,7 +128,7 @@ class SpotifyOverlayComponent(
                 HUD_TYPE.DEFAULT -> 25
                 HUD_TYPE.MEDIUM_COVER -> 25
                 HUD_TYPE.BIG_COVER -> 20
-            } * (scale - 1.0f) // holy fuck this is so cursed LOOOL
+            }
             
             val timelineThickness = when (hudType) {
                 HUD_TYPE.DEFAULT -> 1.0
