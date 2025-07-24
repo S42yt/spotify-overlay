@@ -94,5 +94,14 @@ publishing {
 		}
 	}
 
-	repositories {}
+	repositories {
+		maven {
+			name = "timlohrer-snapshots"
+			url = uri("https://reposilite.timlohrer.dev/snapshots")
+			credentials {
+				username = System.getenv("REPOSILITE_USERNAME")
+				password = System.getenv("REPOSILITE_PASSWORD")
+			}
+		}
+	}
 }
