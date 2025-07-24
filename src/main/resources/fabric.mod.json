@@ -12,7 +12,7 @@
 		"sources": "https://github.com/TimLohrer/spotify-overlay",
 		"issues": "https://github.com/TimLohrer/spotify-overlay/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "ARR",
 	"icon": "assets/spotify_overlay/icon.png",
 	"environment": "*",
 	"entrypoints": {
