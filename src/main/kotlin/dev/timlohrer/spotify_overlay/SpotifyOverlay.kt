@@ -7,7 +7,6 @@ import dev.timlohrer.spotify_overlay.config.HUD_TYPE
 import dev.timlohrer.spotify_overlay.config.SpotifyOverlayConfig
 import dev.timlohrer.spotify_overlay.utils.ImageHandler
 import io.wispforest.owo.ui.core.Positioning
-import io.wispforest.owo.ui.event.KeyPress
 import io.wispforest.owo.ui.hud.Hud
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

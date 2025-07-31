@@ -35,7 +35,7 @@ dependencies {
 	modImplementation("net.silkmc:silk-core:${project.silk_version}")
 	
 	// UI
-	modImplementation("io.github.0x3c50.renderer:renderer-fabric:2.0.2")
+	include(modImplementation("io.github.0x3c50.renderer:renderer-fabric:2.0.2"))
 	modImplementation("io.wispforest:owo-lib:${project.owo_version}") {
 		exclude group: "org.jetbrains.kotlin"
 	}
@@ -46,7 +46,7 @@ dependencies {
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
-	implementation "dev.timlohrer:local-media-listener:${project.local_media_listener_version}"
+	include(implementation("dev.timlohrer:local-media-listener:${project.local_media_listener_version}"))
 }
 
 loom {
