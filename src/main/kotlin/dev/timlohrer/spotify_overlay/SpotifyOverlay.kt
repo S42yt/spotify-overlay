@@ -6,6 +6,7 @@ import dev.timlohrer.spotify_overlay.components.SpotifyOverlayComponent
 import dev.timlohrer.spotify_overlay.config.HUD_TYPE
 import dev.timlohrer.spotify_overlay.config.SpotifyOverlayConfig
 import dev.timlohrer.spotify_overlay.utils.ImageHandler
+import dev.timlohrer.spotify_overlay.utils.Logger
 import io.wispforest.owo.ui.core.Positioning
 import io.wispforest.owo.ui.hud.Hud
 import kotlinx.coroutines.CoroutineScope
@@ -26,10 +27,8 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.silkmc.silk.core.text.literal
 import org.lwjgl.glfw.GLFW
-import org.slf4j.LoggerFactory
 
 object SpotifyOverlay : ModInitializer {
-	private val logger = LoggerFactory.getLogger("spotify_overlay")
 	const val MOD_ID = "spotify_overlay"
 
 	private lateinit var backKeybinding: KeyBinding
@@ -138,13 +137,13 @@ object SpotifyOverlay : ModInitializer {
 	fun initializeListener() {
 		try {
 			LocalMediaListener.initialize {
-				logger.info("SpotifyOverlay listener initialized")
+				Logger.info("SpotifyOverlay listener initialized")
 				LocalMediaListener.onMediaChange { mediaInfo ->
 					if (currentMedia == null || mediaInfo.isPlaying) {
 						if (!knownSources.contains(mediaInfo.source)) {
 							knownSources.add(mediaInfo.source.trim())
 							MinecraftClient.getInstance().player?.sendMessage("§a§lSpotify§fOverlay §r§b» §rNew media source detected: ${if (mediaInfo.source.contains("Spotify")) "Spotify" else mediaInfo.source}.".literal, false)
-							println("New media source detected: ${mediaInfo.source}")
+							Logger.info("New media source detected: "+mediaInfo.source)
 						}
 
 						if (shouldShowMedia(mediaInfo.source)) {
@@ -154,7 +153,7 @@ object SpotifyOverlay : ModInitializer {
 				}
 			}
 		} catch (e: Exception) {
-			logger.error("Failed to initialize LocalMediaListener: ${e.message}", e)
+			Logger.error("Failed to initialize LocalMediaListener: "+e.message, e)
 			return
 		}
 		
@@ -173,11 +172,11 @@ object SpotifyOverlay : ModInitializer {
 				LocalMediaListener.closeHook()
 			}
 		} catch (e: Exception) {
-			logger.error("Failed to properly close LocalMediaListener: ${e.message}", e)
+			Logger.error("Failed to properly close LocalMediaListener: "+e.message, e)
 		}
 		if (MinecraftClient.getInstance().player?.world == null) return
 		Hud.remove("spotify_overlay".toId())
-		logger.info("SpotifyOverlay listener shut down")
+		Logger.info("SpotifyOverlay listener shut down")
 	}
 
 	fun shouldShowMedia(source: String): Boolean {
