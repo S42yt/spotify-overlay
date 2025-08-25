@@ -45,8 +45,9 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-	
-	include(implementation("dev.timlohrer:local-media-listener:${project.local_media_listener_version}"))
+
+	//include(implementation("dev.timlohrer:local-media-listener:${project.local_media_listener_version}"))
+    implementation files('libs/local_media_listener-1.0.3.jar')
 }
 
 loom {
@@ -84,6 +85,9 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
+
+    from zipTree('libs/local_media_listener-1.0.3.jar')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 publishing {

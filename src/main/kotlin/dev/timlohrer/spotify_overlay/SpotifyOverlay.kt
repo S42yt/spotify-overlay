@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -135,21 +136,26 @@ object SpotifyOverlay : ModInitializer {
 	}
 	
 	fun initializeListener() {
-		LocalMediaListener.initialize {
-			logger.info("SpotifyOverlay listener initialized")
-			LocalMediaListener.onMediaChange { mediaInfo ->
-				if (currentMedia == null || mediaInfo.isPlaying) {
-					if (!knownSources.contains(mediaInfo.source)) {
-						knownSources.add(mediaInfo.source.trim())
-						MinecraftClient.getInstance().player?.sendMessage("§a§lSpotify§fOverlay §r§b» §rNew media source detected: ${if (mediaInfo.source.contains("Spotify")) "Spotify" else mediaInfo.source}.".literal, false)
-						println("New media source detected: ${mediaInfo.source}")
-					}
+		try {
+			LocalMediaListener.initialize {
+				logger.info("SpotifyOverlay listener initialized")
+				LocalMediaListener.onMediaChange { mediaInfo ->
+					if (currentMedia == null || mediaInfo.isPlaying) {
+						if (!knownSources.contains(mediaInfo.source)) {
+							knownSources.add(mediaInfo.source.trim())
+							MinecraftClient.getInstance().player?.sendMessage("§a§lSpotify§fOverlay §r§b» §rNew media source detected: ${if (mediaInfo.source.contains("Spotify")) "Spotify" else mediaInfo.source}.".literal, false)
+							println("New media source detected: ${mediaInfo.source}")
+						}
 
-					if (shouldShowMedia(mediaInfo.source)) {
-						currentMedia = mediaInfo
+						if (shouldShowMedia(mediaInfo.source)) {
+							currentMedia = mediaInfo
+						}
 					}
 				}
 			}
+		} catch (e: Exception) {
+			logger.error("Failed to initialize LocalMediaListener: ${e.message}", e)
+			return
 		}
 		
 		if (MinecraftClient.getInstance().player?.world == null) return
@@ -161,9 +167,13 @@ object SpotifyOverlay : ModInitializer {
 	}
 	
 	fun uninitializeListener() {
-		if (!LocalMediaListener.isAvailable()) return
-		if (LocalMediaListener.isRunning) {
-			LocalMediaListener.closeHook()
+		try {
+			if (!LocalMediaListener.isAvailable()) return
+			if (LocalMediaListener.isRunning) {
+				LocalMediaListener.closeHook()
+			}
+		} catch (e: Exception) {
+			logger.error("Failed to properly close LocalMediaListener: ${e.message}", e)
 		}
 		if (MinecraftClient.getInstance().player?.world == null) return
 		Hud.remove("spotify_overlay".toId())
