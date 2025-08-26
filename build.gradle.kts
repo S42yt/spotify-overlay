@@ -281,8 +281,8 @@ class ModProperties {
  * Fabric requires that the mod's client and common main() entry points be included in the fabric.mod.json file.
  */
 class ModFabric {
-    val commonEntry = "${group}.${env.archivesBaseName}.fabric.${property("mod.fabric.entry.common").toString()}"
-    val clientEntry = "${group}.${env.archivesBaseName}.fabric.${property("mod.fabric.entry.client").toString()}"
+    val commonEntry = "${group}.${env.archivesBaseName}.${property("mod.fabric.entry.common").toString()}"
+    val clientEntry = "${group}.${env.archivesBaseName}.${property("mod.fabric.entry.client").toString()}"
 }
 
 /**

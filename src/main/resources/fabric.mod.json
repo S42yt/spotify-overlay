@@ -21,6 +21,12 @@
         "value": "${fabric_common_entry}",
         "adapter": "kotlin"
       }
+    ],
+    "modmenu": [
+      {
+        "value": "dev.timlohrer.spotify_overlay.config.SpotifyOverlayConfigScreen",
+        "adapter": "kotlin"
+      }
     ]
   },
   ${mixin_field}
