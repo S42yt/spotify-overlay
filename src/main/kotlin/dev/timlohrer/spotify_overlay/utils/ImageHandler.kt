@@ -149,6 +149,7 @@ internal object ImageHandler {
                 return loadFromDisk(cachedFile, url, cornerRadius, topLeft, topRight, bottomLeft, bottomRight)
             } else {
                 Logger.warn("Unsupported URL format: $url")
+                return EMPTY
             }
         } catch (e: Exception) {
             Logger.error("Failed to load image from $url: ${e.message}", e)
